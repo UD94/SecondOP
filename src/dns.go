@@ -1,7 +1,7 @@
 package src
 
 import (
-	"end"
+	"RUARUARUA/end"
 	"fmt"
 	"net"
 	"os"
