@@ -56,12 +56,15 @@ func Dns_thread(domain_name string) {
 
 			for _, n := range ns {
 
-				mutex.Lock()
-				Common.Write_result(domain+",", "log.txt")
-				fmt.Fprintf(os.Stdout, "--%s\n", n)
-				Common.Write_result(n+",", "log.txt")
-				Common.Write_result("\n", "log.txt")
-				mutex.Unlock()
+				if !Common.in(n, concontrolset) {
+					mutex.Lock()
+					Common.Write_result(domain+",", "log.txt")
+					fmt.Fprintf(os.Stdout, "--%s\n", n)
+					Common.Write_result(n+",", "log.txt")
+					Common.Write_result("\n", "log.txt")
+					mutex.Unlock()
+				}
+
 			}
 
 			defer wait.Done()

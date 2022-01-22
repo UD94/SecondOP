@@ -77,7 +77,6 @@ func Starthttps() {
 func main() {
 
 	channel_password = "ud94iscreater"
-	Common.Write_result("test.txt", "fff")
 
 	Starthttps()
 }
