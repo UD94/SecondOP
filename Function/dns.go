@@ -56,7 +56,7 @@ func Dns_thread(domain_name string) {
 
 			for _, n := range ns {
 
-				if !Common.in(n, concontrolset) {
+				if !Common.In(n, concontrolset) {
 					mutex.Lock()
 					Common.Write_result(domain+",", "log.txt")
 					fmt.Fprintf(os.Stdout, "--%s\n", n)

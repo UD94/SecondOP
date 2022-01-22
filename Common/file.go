@@ -35,7 +35,7 @@ func Equal(a, b []string) bool {
 	return true
 }
 
-func in(target string, str_array []string) bool {
+func In(target string, str_array []string) bool {
 	sort.Strings(str_array)
 	index := sort.SearchStrings(str_array, target)
 	if index < len(str_array) && str_array[index] == target {
