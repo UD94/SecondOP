@@ -12,6 +12,8 @@ import (
 	"os"
 	"strings"
 	"sync"
+
+	"github.com/UD94/SecondOP/Common"
 )
 
 var channel_password string
@@ -104,6 +106,7 @@ func Starthttps() {
 func main() {
 
 	channel_password = "ud94iscreater"
+	Common.Write_result("test.txt", "fff")
 
 	Starthttps()
 }
@@ -112,7 +115,7 @@ func Write_result(wireteString string, filename string) {
 
 	var f *os.File
 	var err1 error
-	if CheckFileIsExist(filename) { //如果文件存在
+	if Common.CheckFileIsExist(filename) { //如果文件存在
 		f, err1 = os.OpenFile(filename, os.O_APPEND, 0666) //打开文件
 
 	} else {

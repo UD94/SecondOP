@@ -1,4 +1,4 @@
-package common
+package Common
 
 import (
 	"bufio"
@@ -85,4 +85,28 @@ func Read_file(filename string, c chan string) {
 		}
 	}
 	close(c)
+}
+
+func DeleteFile(filename string) {
+	//源文件路径
+
+	err := os.Remove(filename) //删除文件test.txt
+
+	if err != nil {
+
+		//如果删除失败则输出 file remove Error!
+
+		fmt.Println("file remove Error!")
+
+		//输出错误详细信息
+
+		fmt.Printf("%s", err)
+
+	} else {
+
+		//如果删除成功则输出 file remove OK!
+
+		fmt.Print("file remove OK!")
+
+	}
 }
