@@ -51,6 +51,10 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func Send_message() {
+
+}
+
 func Config_Workstation(configtype string, content []string, Doldfile bool) {
 	switch configtype {
 	case "dnsdomainconfig":

@@ -98,7 +98,6 @@ func Read_file(filename string, c chan string) {
 }
 
 func DeleteFile(filename string) {
-	//源文件路径
 
 	err := os.Remove(filename) //删除文件test.txt
 
