@@ -1,19 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
-	"net"
 	"net/http"
-	"os"
-	"strings"
-	"sync"
 
 	"github.com/UD94/SecondOP/Common"
+	"github.com/UD94/SecondOP/Function"
 )
 
 var channel_password string
@@ -42,9 +37,9 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 	} else {
 		switch get_result.Action {
 		case "dnsresolvr":
-			go Dns_thread(get_result.Domain)
+			go Function.Dns_thread(get_result.Domain)
 
-			go Google_domain(get_result.Domain)
+			go Function.Google_domain(get_result.Domain)
 			fmt.Fprintf(w, `{"code":0}`)
 		case "config":
 			Config_Workstation(get_result.Configtype, get_result.Content, get_result.Doldfile)
@@ -56,38 +51,14 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func DeleteFile(filename string) {
-	//源文件路径
-
-	err := os.Remove(filename) //删除文件test.txt
-
-	if err != nil {
-
-		//如果删除失败则输出 file remove Error!
-
-		fmt.Println("file remove Error!")
-
-		//输出错误详细信息
-
-		fmt.Printf("%s", err)
-
-	} else {
-
-		//如果删除成功则输出 file remove OK!
-
-		fmt.Print("file remove OK!")
-
-	}
-}
-
 func Config_Workstation(configtype string, content []string, Doldfile bool) {
 	switch configtype {
 	case "dnsdomainconfig":
 		if Doldfile {
-			DeleteFile("domain.txt")
+			Common.DeleteFile("domain.txt")
 		}
 		for _, s := range content {
-			Write_result(s+"\n", "domain.txt")
+			Common.Write_result(s+"\n", "domain.txt")
 		}
 
 	default:
@@ -109,145 +80,4 @@ func main() {
 	Common.Write_result("test.txt", "fff")
 
 	Starthttps()
-}
-
-func Write_result(wireteString string, filename string) {
-
-	var f *os.File
-	var err1 error
-	if Common.CheckFileIsExist(filename) { //如果文件存在
-		f, err1 = os.OpenFile(filename, os.O_APPEND, 0666) //打开文件
-
-	} else {
-		f, err1 = os.Create(filename) //创建文件
-
-	}
-	defer f.Close()
-	n, err1 := io.WriteString(f, wireteString) //写入文件(字符串)
-	if err1 != nil {
-		panic(err1)
-	}
-	fmt.Printf("写入 %d 个字节n", n)
-}
-
-func Read_file(filename string, c chan string) {
-
-	file, err := os.OpenFile(filename, os.O_RDWR, 0666)
-	if err != nil {
-		fmt.Println("Open file error!", err)
-		return
-	}
-	defer file.Close()
-
-	stat, err := file.Stat()
-	if err != nil {
-		panic(err)
-	}
-	var size = stat.Size()
-	fmt.Println("file size=", size)
-
-	buf := bufio.NewReader(file)
-	for {
-		line, err := buf.ReadString('\n')
-		line = strings.TrimSpace(line)
-		c <- line
-		if err != nil {
-			if err == io.EOF {
-				fmt.Println("File read ok!")
-				break
-			} else {
-				fmt.Println("Read file error!", err)
-				return
-			}
-		}
-	}
-	close(c)
-}
-
-func CheckFileIsExist(filename string) bool {
-	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		return false
-	}
-	return true
-}
-
-func Equal(a, b []string) bool {
-	// If one is nil, the other must also be nil.
-	if (a == nil) != (b == nil) {
-		return false
-	}
-
-	if len(a) != len(b) {
-		return false
-	}
-
-	for i := range a {
-		if a[i] != b[i] {
-			return false
-		}
-	}
-
-	return true
-}
-
-func Google_domain(domain_name string) {
-
-}
-
-func Dns_thread(domain_name string) {
-
-	var concontrolset = []string{}
-
-	set_domain := "ud94iscreater." + domain_name
-	ns, err := net.LookupHost(set_domain)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Err: %s", err.Error())
-
-	} else {
-		concontrolset = ns
-	}
-
-	for _, s := range concontrolset {
-		fmt.Printf(s)
-	}
-
-	sublist := []string{}
-	outCh := make(chan string, 200)
-	go Read_file("domain.txt", outCh)
-
-	for x := range outCh {
-		sublist = append(sublist, x)
-	}
-
-	var mutex sync.Mutex
-	wait := sync.WaitGroup{}
-
-	for _, s := range sublist {
-
-		wait.Add(1)
-		domain := s + "." + domain_name
-		go func() {
-
-			ns, err := net.LookupHost(domain)
-
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Err: %s", err.Error())
-				return
-			}
-
-			for _, n := range ns {
-
-				mutex.Lock()
-				Write_result(domain+",", "log.txt")
-				fmt.Fprintf(os.Stdout, "--%s\n", n)
-				Write_result(n+",", "log.txt")
-				Write_result("\n", "log.txt")
-				mutex.Unlock()
-			}
-
-			defer wait.Done()
-		}()
-	}
-	wait.Wait()
-
 }
