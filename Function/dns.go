@@ -55,10 +55,10 @@ func Dns_thread(domain_name string) {
 
 				if !Common.In(n, concontrolset) {
 					mutex.Lock()
-					Common.Write_result(domain+",", CacheFileName)
+					Common.Write_result(domain+",", "Cache\\"+CacheFileName)
 					fmt.Fprintf(os.Stdout, "--%s\n", n)
-					Common.Write_result(n+",", CacheFileName)
-					Common.Write_result("\n", CacheFileName)
+					Common.Write_result(n+",", "Cache\\"+CacheFileName)
+					Common.Write_result("\n", "Cache\\"+CacheFileName)
 					mutex.Unlock()
 				}
 

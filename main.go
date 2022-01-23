@@ -48,28 +48,32 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 			Config_Workstation(get_result.Configtype, get_result.Content, get_result.Doldfile)
 			fmt.Fprintf(w, `{"code":0}`)
 		default:
-			file, _ := os.Open("log.txt")
-			defer file.Close()
+			files, err := ioutil.ReadDir(`Cache`)
+			if err != nil {
+				panic(err)
+			}
+			if len(files) != 0 {
+				file, _ := os.Open("Cache" + files[0].Name())
+				defer Common.DeleteFile("Cache" + files[0].Name())
+				defer file.Close()
 
-			fileHeader := make([]byte, 512)
-			file.Read(fileHeader)
+				fileHeader := make([]byte, 512)
+				file.Read(fileHeader)
 
-			fileStat, _ := file.Stat()
+				fileStat, _ := file.Stat()
 
-			w.Header().Set("Content-Disposition", "attachment; filename="+"log.txt")
-			w.Header().Set("Content-Type", http.DetectContentType(fileHeader))
-			w.Header().Set("Content-Length", strconv.FormatInt(fileStat.Size(), 10))
+				w.Header().Set("Content-Disposition", "attachment; filename="+files[0].Name())
+				w.Header().Set("Content-Type", http.DetectContentType(fileHeader))
+				w.Header().Set("Content-Length", strconv.FormatInt(fileStat.Size(), 10))
 
-			file.Seek(0, 0)
-			io.Copy(w, file)
-			Common.DeleteFile("log.txt")
+				file.Seek(0, 0)
+				io.Copy(w, file)
+
+			}
 			fmt.Fprintf(w, `{"code":0}`)
+
 		}
 	}
-
-}
-
-func Send_message() {
 
 }
 
@@ -99,6 +103,14 @@ func Starthttps() {
 func main() {
 
 	channel_password = "ud94iscreater"
+	files, err := ioutil.ReadDir(`Cache`)
+	if err != nil {
+		panic(err)
+	}
+	// 获取文件，并输出它们的名字
+	if len(files) != 0 {
+		fmt.Printf(files[0].Name())
+	}
 
-	Starthttps()
+	/*Starthttps()*/
 }
