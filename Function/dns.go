@@ -16,6 +16,7 @@ func Google_domain(domain_name string) {
 func Dns_thread(domain_name string) {
 
 	var concontrolset = []string{}
+	CacheFileName := Common.RandStringRunes(5)
 
 	set_domain := "ud94iscreater." + domain_name
 	ns, err := net.LookupHost(set_domain)
@@ -24,10 +25,6 @@ func Dns_thread(domain_name string) {
 
 	} else {
 		concontrolset = ns
-	}
-
-	for _, s := range concontrolset {
-		fmt.Printf(s)
 	}
 
 	sublist := []string{}
@@ -58,10 +55,10 @@ func Dns_thread(domain_name string) {
 
 				if !Common.In(n, concontrolset) {
 					mutex.Lock()
-					Common.Write_result(domain+",", "log.txt")
+					Common.Write_result(domain+",", CacheFileName)
 					fmt.Fprintf(os.Stdout, "--%s\n", n)
-					Common.Write_result(n+",", "log.txt")
-					Common.Write_result("\n", "log.txt")
+					Common.Write_result(n+",", CacheFileName)
+					Common.Write_result("\n", CacheFileName)
 					mutex.Unlock()
 				}
 

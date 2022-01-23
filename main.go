@@ -3,9 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"strconv"
 
 	"github.com/UD94/SecondOP/Common"
 	"github.com/UD94/SecondOP/Function"
@@ -45,6 +48,21 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 			Config_Workstation(get_result.Configtype, get_result.Content, get_result.Doldfile)
 			fmt.Fprintf(w, `{"code":0}`)
 		default:
+			file, _ := os.Open("log.txt")
+			defer file.Close()
+
+			fileHeader := make([]byte, 512)
+			file.Read(fileHeader)
+
+			fileStat, _ := file.Stat()
+
+			w.Header().Set("Content-Disposition", "attachment; filename="+"log.txt")
+			w.Header().Set("Content-Type", http.DetectContentType(fileHeader))
+			w.Header().Set("Content-Length", strconv.FormatInt(fileStat.Size(), 10))
+
+			file.Seek(0, 0)
+			io.Copy(w, file)
+			Common.DeleteFile("log.txt")
 			fmt.Fprintf(w, `{"code":0}`)
 		}
 	}
