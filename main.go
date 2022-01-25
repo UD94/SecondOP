@@ -10,6 +10,9 @@ import (
 	"os"
 	"strconv"
 
+	"fyne.io/fyne/app"
+	"fyne.io/fyne/layout"
+	"fyne.io/fyne/widget"
 	"github.com/UD94/SecondOP/Common"
 	"github.com/UD94/SecondOP/Function"
 )
@@ -53,8 +56,8 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 				panic(err)
 			}
 			if len(files) != 0 {
-				file, _ := os.Open("Cache" + files[0].Name())
-				defer Common.DeleteFile("Cache" + files[0].Name())
+				file, _ := os.Open("Cache\\" + files[0].Name())
+				defer Common.DeleteFile("Cache\\" + files[0].Name())
 				defer file.Close()
 
 				fileHeader := make([]byte, 512)
@@ -68,9 +71,8 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 
 				file.Seek(0, 0)
 				io.Copy(w, file)
-
+				fmt.Fprintf(w, `{"code":10}`)
 			}
-			fmt.Fprintf(w, `{"code":0}`)
 
 		}
 	}
@@ -100,17 +102,60 @@ func Starthttps() {
 	}
 }
 
+/*
 func main() {
 
 	channel_password = "ud94iscreater"
-	files, err := ioutil.ReadDir(`Cache`)
-	if err != nil {
-		panic(err)
-	}
-	// 获取文件，并输出它们的名字
-	if len(files) != 0 {
-		fmt.Printf(files[0].Name())
+
+	Starthttps()
+}
+
+
+func main() {
+	// new app
+	a := app.New()
+	// new window
+	w := a.NewWindow("Hacker Station")
+	// resize window
+	w.Resize(fyne.NewSize(400, 400))
+	// Menu Items
+	menuItem1 := fyne.NewMenuItem("Login", func() { fmt.Println("New pressed") })
+	menuItem2 := fyne.NewMenuItem("Save", func() { fmt.Println("Save pressed") })
+	menuItem3 := fyne.NewMenuItem("edit", nil)
+	// New Menu
+	newMenu := fyne.NewMenu("File", menuItem1, menuItem2, menuItem3)
+	// creating new main menu
+	menu := fyne.NewMainMenu(newMenu)
+	// setting new menu
+	w.SetMainMenu(menu)
+	w.ShowAndRun()
+}
+*/
+func main() {
+	myApp := app.New()
+	myWin := myApp.NewWindow("Entry")
+
+	nameEntry := widget.NewEntry()
+	nameEntry.SetPlaceHolder("input name")
+	nameEntry.OnChanged = func(content string) {
+		fmt.Println("name:", nameEntry.Text, "entered")
 	}
 
-	/*Starthttps()*/
+	passEntry := widget.NewPasswordEntry()
+	passEntry.SetPlaceHolder("input password")
+
+	nameBox := widget.NewHBox(widget.NewLabel("Name"), layout.NewSpacer(), nameEntry)
+	passwordBox := widget.NewHBox(widget.NewLabel("Password"), layout.NewSpacer(), passEntry)
+
+	loginBtn := widget.NewButton("Login", func() {
+		fmt.Println("name:", nameEntry.Text, "password:", passEntry.Text, "login in")
+	})
+
+	multiEntry := widget.NewEntry()
+	multiEntry.SetPlaceHolder("please enter\nyour description")
+	multiEntry.MultiLine = true
+
+	content := widget.NewVBox(nameBox, passwordBox, loginBtn, multiEntry)
+	myWin.SetContent(content)
+	myWin.ShowAndRun()
 }
