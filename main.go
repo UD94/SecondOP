@@ -10,9 +10,6 @@ import (
 	"os"
 	"strconv"
 
-	"fyne.io/fyne/app"
-	"fyne.io/fyne/layout"
-	"fyne.io/fyne/widget"
 	"github.com/UD94/SecondOP/Common"
 	"github.com/UD94/SecondOP/Function"
 )
@@ -102,60 +99,9 @@ func Starthttps() {
 	}
 }
 
-/*
 func main() {
 
 	channel_password = "ud94iscreater"
 
 	Starthttps()
-}
-
-
-func main() {
-	// new app
-	a := app.New()
-	// new window
-	w := a.NewWindow("Hacker Station")
-	// resize window
-	w.Resize(fyne.NewSize(400, 400))
-	// Menu Items
-	menuItem1 := fyne.NewMenuItem("Login", func() { fmt.Println("New pressed") })
-	menuItem2 := fyne.NewMenuItem("Save", func() { fmt.Println("Save pressed") })
-	menuItem3 := fyne.NewMenuItem("edit", nil)
-	// New Menu
-	newMenu := fyne.NewMenu("File", menuItem1, menuItem2, menuItem3)
-	// creating new main menu
-	menu := fyne.NewMainMenu(newMenu)
-	// setting new menu
-	w.SetMainMenu(menu)
-	w.ShowAndRun()
-}
-*/
-func main() {
-	myApp := app.New()
-	myWin := myApp.NewWindow("Entry")
-
-	nameEntry := widget.NewEntry()
-	nameEntry.SetPlaceHolder("input name")
-	nameEntry.OnChanged = func(content string) {
-		fmt.Println("name:", nameEntry.Text, "entered")
-	}
-
-	passEntry := widget.NewPasswordEntry()
-	passEntry.SetPlaceHolder("input password")
-
-	nameBox := widget.NewHBox(widget.NewLabel("Name"), layout.NewSpacer(), nameEntry)
-	passwordBox := widget.NewHBox(widget.NewLabel("Password"), layout.NewSpacer(), passEntry)
-
-	loginBtn := widget.NewButton("Login", func() {
-		fmt.Println("name:", nameEntry.Text, "password:", passEntry.Text, "login in")
-	})
-
-	multiEntry := widget.NewEntry()
-	multiEntry.SetPlaceHolder("please enter\nyour description")
-	multiEntry.MultiLine = true
-
-	content := widget.NewVBox(nameBox, passwordBox, loginBtn, multiEntry)
-	myWin.SetContent(content)
-	myWin.ShowAndRun()
 }
