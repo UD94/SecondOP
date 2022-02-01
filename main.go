@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -100,17 +101,19 @@ func Config_Workstation(configtype string, content []string, Doldfile bool) {
 	}
 }
 
-func Starthttps() {
+func Starthttps(ip string) {
 	http.HandleFunc("/post", HandlePostJson)
-	err := http.ListenAndServeTLS(":4321", "server.crt", "server.key", nil)
+	err := http.ListenAndServeTLS(ip+":4321", "server.crt", "server.key", nil)
 	if err != nil {
 		log.Fatal("listen error:", err.Error())
 	}
 }
 
 func main() {
+	var ip string
+	flag.StringVar(&channel_password, "p", "ud94iscreater", "连接密码，默认为ud94iscreater")
+	flag.StringVar(&ip, "i", "0.0.0.0", "监听ip，默认为0.0.0.0")
+	flag.Parse()
 
-	channel_password = "ud94iscreater"
-
-	Starthttps()
+	Starthttps(ip)
 }
