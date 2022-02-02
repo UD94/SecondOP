@@ -14,6 +14,7 @@ import (
 
 	"github.com/UD94/SecondOP/Common"
 	"github.com/UD94/SecondOP/Function"
+	"github.com/go-ini/ini"
 )
 
 var channel_password string
@@ -55,6 +56,10 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 		case "md5":
 			result := Function.Md5_query(get_result.Content[0], DB)
 			fmt.Fprintf(w, `{"code:0","Password":"`+result.Password+`"}`)
+		case "saveproject":
+			Function.Save(DB)
+		case "readproject":
+			Function.Read(DB)
 		default:
 			files, err := ioutil.ReadDir(`Cache`)
 			if err != nil {
@@ -85,6 +90,10 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 }
 
 func Config_Workstation(configtype string, content []string, Doldfile bool) {
+	cfg, err := ini.Load("config.ini")
+	if err != nil {
+		fmt.Printf("Load config error")
+	}
 	switch configtype {
 	case "dnsdomainconfig":
 		if Doldfile {
@@ -95,7 +104,14 @@ func Config_Workstation(configtype string, content []string, Doldfile bool) {
 		}
 	case "md5config":
 		Function.MD5_insert(content[0], content[1], DB)
-
+	case "mysqlconfig":
+		cfg.Section("mysql").Key("ip").SetValue(content[0])
+		cfg.Section("mysql").Key("port").SetValue(content[1])
+		cfg.Section("mysql").Key("user").SetValue(content[2])
+		cfg.Section("mysql").Key("password").SetValue(content[3])
+		cfg.Section("mysql").Key("database").SetValue(content[4])
+	case "communicationconfig":
+		channel_password = content[0]
 	default:
 		return
 	}
