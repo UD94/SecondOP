@@ -158,18 +158,12 @@ func Starthttps(ip string) {
 	}
 }
 
-func Starthttp(ip string) {
-	http.HandleFunc("/post", HandlePostJson)
-	http.ListenAndServe(":8000", nil)
-}
-
 func main() {
 	var ip string
 	flag.StringVar(&channel_password, "p", "ud94iscreater", "连接密码，默认为ud94iscreater")
 	flag.StringVar(&ip, "i", "0.0.0.0", "监听ip，默认为0.0.0.0")
 	flag.Parse()
-	/*
-		Starthttps(ip)
-		Starthttp(ip)*/
+
+	Starthttps(ip)
 
 }
