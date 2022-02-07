@@ -18,12 +18,12 @@ func Md5_query(hash_str string) (string, error) {
 
 	DB := new(sql.DB)
 	defer DB.Close()
-	status := Common.InitDB(DB)
+	status := Common.InitDB(DB, "ntlm")
 	if status == nil {
-		err := DB.QueryRow("SELECT * FROM md5 WHERE ntlm = ?", hash_str).Scan(&user.NTLM, &user.Password)
+		err := DB.QueryRow("SELECT Password FROM ntlm WHERE hash = ?", hash_str).Scan(&user.NTLM, &user.Password)
 		if err != nil {
 			fmt.Println("查询出错了")
-			return "nopass", errors.New("nopass")
+			return "nopass", errors.New("no pass")
 		}
 		DB.Close()
 		return user.Password, nil
@@ -35,9 +35,9 @@ func Md5_query(hash_str string) (string, error) {
 func MD5_insert(hash_str string, password string) (string, error) {
 	DB := new(sql.DB)
 	defer DB.Close()
-	err := Common.InitDB(DB)
+	err := Common.InitDB(DB, "ntlm")
 	if err == nil {
-		_, err := DB.Exec("insert into md5(ntlm,password) values(?,?)", hash_str, password)
+		_, err := DB.Exec("insert into ntlm(hash,password) values(?,?)", hash_str, password)
 		if err != nil {
 			fmt.Println("新增数据错误", err)
 			return "inserterror", errors.New("insert error")

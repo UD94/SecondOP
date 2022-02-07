@@ -25,6 +25,7 @@ func Dns_thread(domain_name string) {
 
 	} else {
 		concontrolset = ns
+
 	}
 
 	sublist := []string{}
