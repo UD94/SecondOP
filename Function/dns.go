@@ -1,12 +1,16 @@
 package Function
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net"
 	"os"
+	"strings"
 	"sync"
 
 	"github.com/UD94/SecondOP/Common"
+	"github.com/haccer/subjack/subjack"
 )
 
 func Google_domain(domain_name string) {
@@ -70,4 +74,44 @@ func Dns_thread(domain_name string) {
 	}
 	wait.Wait()
 
+}
+
+func Subhackdomain() {
+	sublist := []string{}
+	outCh := make(chan string, 200)
+	go Common.Read_file("domain.txt", outCh)
+
+	for x := range outCh {
+		sublist = append(sublist, x)
+	}
+
+	target := []string{}
+	outCh1 := make(chan string, 200)
+	go Common.Read_file("sublist.txt", outCh1)
+
+	for x := range outCh1 {
+		target = append(target, x)
+	}
+
+	for _, subdomain := range sublist {
+		for _, domain := range target {
+			go subhack(subdomain + domain)
+		}
+	}
+
+}
+
+func subhack(subdomain string) {
+	var fingerprints []subjack.Fingerprints
+	config, _ := ioutil.ReadFile("custom_fingerprints.json")
+	json.Unmarshal(config, &fingerprints)
+
+	/* Use subjack's advanced detection to identify
+	if the subdomain is able to be taken over. */
+	service := subjack.Identify(subdomain, false, false, 10, fingerprints)
+
+	if service != "" {
+		service = strings.ToLower(service)
+		fmt.Printf("%s is pointing to a vulnerable %s service.\n", subdomain, service)
+	}
 }

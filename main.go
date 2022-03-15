@@ -83,12 +83,6 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 				ResponseString.Content = append(ResponseString.Content, result)
 			}
 
-		case "saveproject":
-			Function.Save()
-		case "readproject":
-
-			Function.Read()
-
 		case "analysis":
 			switch get_result.Type {
 			case "nmap":
@@ -98,6 +92,8 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 			case "mimikatz":
 				Function.Mimikatz(get_result.Content)
 			}
+		case "subhack":
+			Function.Subhackdomain()
 
 		case "downloadjob":
 			file, _ := os.Open("Cache\\" + get_result.Content[0])

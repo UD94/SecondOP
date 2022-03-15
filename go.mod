@@ -5,6 +5,11 @@ go 1.15
 require (
 	fyne.io/fyne v1.4.3
 	fyne.io/fyne/v2 v2.1.2
+	github.com/domainr/whois v0.1.0 // indirect
 	github.com/go-ini/ini v1.66.3
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	github.com/haccer/available v0.0.0-20200921032034-0d552efb6cd4 // indirect
+	github.com/haccer/subjack v0.0.0-20201112041112-49c51e57deab
+	github.com/miekg/dns v1.1.47 // indirect
+	github.com/valyala/fasthttp v1.34.0 // indirect
 )
