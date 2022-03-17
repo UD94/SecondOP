@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -161,15 +160,14 @@ func Config_Workstation(configtype string, content []string, Doldfile bool) (str
 			Common.Write_result(s+"\n", "domain.txt")
 		}
 	case "androidonline":
-		_, err := Function.MD5_insert(content[0], content[1])
+
+		_, err := Function.Lineinsert("1", "2", "3", "4")
 		if err != nil {
 			return "insert md5 error", errors.New("md5configerror")
 		}
+
 	case "md5config":
-		int2, _ := strconv.Atoi(content[2])
-		x, _ := strconv.ParseFloat(content[0], 64)
-		y, _ := strconv.ParseFloat(content[1], 64)
-		_, err := Function.Lineinsert(x, y, int2, content[3])
+		_, err := Function.MD5_insert(content[0], content[1])
 		if err != nil {
 			return "insert md5 error", errors.New("md5configerror")
 		}
@@ -198,11 +196,13 @@ func Starthttps(ip string) {
 }
 
 func main() {
-
-	var ip string
-	flag.StringVar(&channel_password, "p", "ud94iscreater", "连接密码，默认为ud94iscreater")
-	flag.StringVar(&ip, "i", "0.0.0.0", "监听ip，默认为0.0.0.0")
-	flag.Parse()
-	Starthttps(ip)
-
+	/*
+		var ip string
+		flag.StringVar(&channel_password, "p", "ud94iscreater", "连接密码，默认为ud94iscreater")
+		flag.StringVar(&ip, "i", "0.0.0.0", "监听ip，默认为0.0.0.0")
+		flag.Parse()
+		Starthttps(ip)
+	*/
+	x, _ := Function.Lineinsert("116.478907", "39.998422", "0", "test")
+	fmt.Println(x)
 }
