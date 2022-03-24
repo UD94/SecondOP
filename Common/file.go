@@ -75,12 +75,10 @@ func Read_file(filename string, c chan string) {
 	}
 	defer file.Close()
 
-	stat, err := file.Stat()
+	_, err = file.Stat()
 	if err != nil {
 		panic(err)
 	}
-	var size = stat.Size()
-	fmt.Println("file size=", size)
 
 	buf := bufio.NewReader(file)
 	for {
@@ -89,7 +87,6 @@ func Read_file(filename string, c chan string) {
 		c <- line
 		if err != nil {
 			if err == io.EOF {
-				fmt.Println("File read ok!")
 				break
 			} else {
 				fmt.Println("Read file error!", err)

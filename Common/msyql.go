@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"time"
 
-	"github.com/go-ini/ini"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -14,25 +14,20 @@ import (
 func InitDB(database string) (*sql.DB, error) {
 	var DB *sql.DB
 
-	cfg, err := ini.Load("config.ini")
-	if err != nil {
-		fmt.Println("ini file not found!")
-	}
+	x := Loadini("config.ini")
 	//构建连接："用户名:密码@tcp(IP:端口)/数据库?charset=utf8"
-	path := strings.Join([]string{cfg.Section("mysql").Key("user").String(), ":", "the1dead2man#", "@tcp(", cfg.Section("mysql").Key("ip").String(), ":", cfg.Section("mysql").Key("port").String(), ")/", database}, "")
-	fmt.Println(path)
-	//打开数据库,前者是驱动名，所以要导入： _ "github.com/go-sql-driver/mysql"
+	path := strings.Join([]string{x["mysql"]["user"], ":", x["mysql"]["password"], "@tcp(", x["mysql"]["ip"], ":", x["mysql"]["port"], ")/", database}, "")
 
-	DB, err = sql.Open("mysql", path)
+	DB, err := sql.Open("mysql", path)
 	//设置数据库最大连接数
 	if err != nil {
 		fmt.Println("opon database fail")
 		return DB, errors.New("database no ready")
 
 	}
-	DB.SetConnMaxLifetime(100)
-	//设置上数据库最大闲置连接数
-	DB.SetMaxIdleConns(10)
+	DB.SetMaxOpenConns(500)
+	DB.SetMaxIdleConns(500)              //空闲连接200
+	DB.SetConnMaxLifetime(time.Hour * 1) //长连接有效期一个小时
 
 	fmt.Println("connnect success")
 
