@@ -48,7 +48,7 @@ func Linequery(DB *sql.DB, w http.ResponseWriter, name string, starttime string,
 
 func Lineinsert(DB *sql.DB, X string, Y string, AG string, name string) (string, error) {
 
-	_, err := DB.Exec("insert into Lines.record(X,Y,SP,AG,TM,line) values(?,?,10,?,?,?)", X, Y, AG, time.Now().Unix(), name)
+	_, err := DB.Exec("insert into androids.record(X,Y,SP,AG,TM,line) values(?,?,10,?,?,?)", X, Y, AG, time.Now().Unix(), name)
 	if err != nil {
 		fmt.Println("新增数据错误", err)
 
