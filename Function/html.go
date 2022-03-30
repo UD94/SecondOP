@@ -1,6 +1,7 @@
 package Function
 
 import (
+	"bytes"
 	"database/sql"
 	"errors"
 	"fmt"
@@ -21,7 +22,7 @@ func Linequery(DB *sql.DB, w http.ResponseWriter, name string, starttime string,
 
 	var data []Line
 
-	rows, err := DB.Query("SELECT X,Y,SP,AG,TM FROM record WHERE line = ? and TM <? and TM > ? ORDER BY TM", name, endtime, starttime)
+	rows, err := DB.Query("SELECT X,Y,SP,AG,TM FROM record WHERE line = ? and TM <? and TM > ? ORDER BY TM ", name, endtime, starttime)
 	if err != nil {
 		fmt.Println("select db failed,err:", err)
 
@@ -33,16 +34,17 @@ func Linequery(DB *sql.DB, w http.ResponseWriter, name string, starttime string,
 		data = append(data, user)
 
 	}
+	var buf bytes.Buffer
 
 	t, _ := template.New("line.html").ParseFiles("html/line.html")
 	for i := 1; i < len(data); i++ {
 		data[i].TM = data[i].TM - data[0].TM
 	}
 
-	t.Execute(w, data)
+	t.Execute(&buf, data)
 	rows.Close()
 
-	return "success", nil
+	return buf.String(), nil
 
 }
 

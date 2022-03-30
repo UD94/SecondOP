@@ -122,7 +122,13 @@ func HandlePostJson(w http.ResponseWriter, r *http.Request) {
 
 		case "line":
 
-			Function.Linequery(linedb, w, get_result.Content[0], get_result.Content[1], get_result.Content[2])
+			htmls, err := Function.Linequery(linedb, w, get_result.Content[0], get_result.Content[1], get_result.Content[2])
+			if err != nil {
+				ResponseString.Code = 13
+			} else {
+				ResponseString.Code = 0
+				ResponseString.Content = append(ResponseString.Content, htmls)
+			}
 
 		default:
 
